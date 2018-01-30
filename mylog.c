@@ -12,6 +12,7 @@ void del_first_line();
 const static char LogLevelText[6][10]={"TRACE","DEBUG","INFO","WARN","ERROR","NONE"};
 
 static char * getdate(char *date);
+static pthread_mutex_t log_lock = PTHREAD_MUTEX_INITIALIZER;
 
 static unsigned char getcode(char *path){
 	unsigned char code=255;
@@ -254,6 +255,7 @@ int delete_first_line()
  */
 int Log_INFO(char *format,...)
 {
+	pthread_mutex_lock(&log_lock);//上锁
 	int line=0;
 	va_list args;
 	if(initlog(INFO)!=0)   //初始化日志
@@ -274,6 +276,7 @@ int Log_INFO(char *format,...)
 	if(loging.logfile!=NULL)  //关闭日志
 		fclose(loging.logfile);
 	loging.logfile=NULL;
+	pthread_mutex_unlock(&log_lock); //解锁
 	return 0;
 }
 
@@ -283,6 +286,7 @@ int Log_INFO(char *format,...)
  */
 int Log_ERROR(char *format,...)
 {
+	pthread_mutex_lock(&log_lock);//上锁
 	int line = 0;
 	va_list args;
 	if(initlog(ERROR)!=0)   //初始化日志
@@ -303,6 +307,7 @@ int Log_ERROR(char *format,...)
 	if(loging.logfile!=NULL)  //关闭日志
 		fclose(loging.logfile);
 	loging.logfile=NULL;
+	pthread_mutex_unlock(&log_lock); //解锁
 	return 0;
 }
 /**
@@ -311,6 +316,7 @@ int Log_ERROR(char *format,...)
  */
 int Log_WARN(char *format,...)
 {
+	pthread_mutex_lock(&log_lock);//上锁
 	int line = 0;
 	va_list args;
 	if(initlog(WARN)!=0)   //初始化日志
@@ -331,6 +337,7 @@ int Log_WARN(char *format,...)
 	if(loging.logfile!=NULL)  //关闭日志
 		fclose(loging.logfile);
 	loging.logfile=NULL;
+	pthread_mutex_unlock(&log_lock); //解锁
 	return 0;
 }
 /**
@@ -339,6 +346,7 @@ int Log_WARN(char *format,...)
  */
 int Log_DEBUG(char *format,...)
 {
+	pthread_mutex_lock(&log_lock);//上锁
 	int line = 0;
 	va_list args;
 	if(initlog(DEBUG)!=0)   //初始化日志
@@ -359,6 +367,7 @@ int Log_DEBUG(char *format,...)
 	if(loging.logfile!=NULL)  //关闭日志
 		fclose(loging.logfile);
 	loging.logfile=NULL;
+	pthread_mutex_unlock(&log_lock); //解锁
 	return 0;
 }
 /**
@@ -367,6 +376,7 @@ int Log_DEBUG(char *format,...)
  */
 int Log_TRACE(char *format,...)
 {
+	pthread_mutex_lock(&log_lock);//上锁
 	int line = 0;
 	va_list args;
 	if(initlog(TRACE)!=0)   //初始化日志
@@ -388,6 +398,7 @@ int Log_TRACE(char *format,...)
 	if(loging.logfile!=NULL)  //关闭日志
 		fclose(loging.logfile);
 	loging.logfile=NULL;
+	 pthread_mutex_unlock(&log_lock); //解锁
 	return 0;
 }
 void del_first_line()
